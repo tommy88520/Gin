@@ -22,6 +22,24 @@ type User struct {
 	Sex      string `json:"sex" form:"sex"`
 }
 
+func AllMiddleWare(c *gin.Context) {
+	fmt.Println("我是全局middleware")
+}
+
+func initMiddleware(c *gin.Context) {
+	fmt.Println("aaadaaaaaaaaa")
+	c.Next()                            //會直接執行middleware後面的回調
+	fmt.Println("nbjkfdajgfd;jafkldsa") //這個等後面的回調函數執行完之後才會再回來執行
+
+}
+
+func initMiddleware2(c *gin.Context) {
+	fmt.Println("aaadaaaaaaaaa")
+	c.Abort()                           //不會執行middleware，直接跳到 後面的回調
+	fmt.Println("nbjkfdajgfd;jafkldsa") //這個等後面的回調函數執行完之後才會再回來執行
+
+}
+
 func main() {
 	r := gin.Default()
 
@@ -37,12 +55,15 @@ func main() {
 
 	routers.ApiRouters(r)
 	routers.PingRouters(r)
+	routers.FileRouters(r)
 
 	//響應jsonp  http://localhost:3000/jsonp?callback=test
 
 	//result: test({"title":"我是一個Title","description":"descs"}); 處理跨域
+	//全局中間件
+	r.Use(AllMiddleWare) //可以好幾個
 
-	r.GET("/jsonp", func(c *gin.Context) {
+	r.GET("/jsonp", initMiddleware, func(c *gin.Context) {
 		a := &Article{
 			Title:       "我是一個Title",
 			Description: "descs",

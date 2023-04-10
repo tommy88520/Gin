@@ -6,11 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Article struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-
 func PingRouters(r *gin.Engine) {
 	pingRouters := r.Group("/ping")
 	{
